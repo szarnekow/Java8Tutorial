@@ -3,8 +3,6 @@ package tutorial.infra.github;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.Test;
 
@@ -21,20 +19,19 @@ public class GitHubEventsTest {
 	
 	@Test
 	public void testReadUsersAndRepositories() {
-		Map<String, Repository> repositories = new ConcurrentHashMap<>();
-		Map<String, User> users = new ConcurrentHashMap<>();
-		EventReader.readEvents(repositories, users);
-		assertEquals(539, repositories.size());
-		assertEquals(426, users.size());
+		EventReader eventReader = new EventReader();
+		EventReader.readEvents(eventReader);
+		assertEquals(539, eventReader.getRepositories().size());
+		assertEquals(426, eventReader.getUsers().size());
 	}
 
 	@Test
 	public void testRepositoriesHaveCreateDate() {
-		Map<String, Repository> repositories = new ConcurrentHashMap<>();
-		EventReader.readEvents(repositories, new ConcurrentHashMap<>());
+		EventReader eventReader = new EventReader();
+		EventReader.readEvents(eventReader);
 		int brokenCount = 0;
-		for(Repository repo: repositories.values()) {
-			if (repo.unsafeGetCreatedAt() == null) {
+		for(Repository repo: eventReader.getRepositories()) {
+			if (repo.getCreatedAt() == null) {
 				brokenCount++;
 			}
 		}

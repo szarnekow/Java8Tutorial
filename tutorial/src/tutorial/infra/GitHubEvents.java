@@ -18,5 +18,4 @@ public class GitHubEvents {
 	public static List<? extends Event> events() {
 		return events;
 	}
-	
 }

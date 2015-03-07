@@ -1,7 +1,6 @@
 package tutorial.infra.github;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public class Repository {
 
@@ -17,17 +16,13 @@ public class Repository {
 		return name;
 	}
 	
-	void setDateIfAbsent(Optional<LocalDateTime> nullableDate) {
-		if (createdAt == null && nullableDate.isPresent()) {
-			createdAt = nullableDate.get();
+	void setDateIfAbsent(LocalDateTime nullableDate) {
+		if (createdAt == null && nullableDate != null) {
+			createdAt = nullableDate;
 		}
 	}
 	
-	public Optional<LocalDateTime> getCreatedAt() {
-		return Optional.ofNullable(createdAt);
-	}
-
-	LocalDateTime unsafeGetCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
