@@ -1,7 +1,6 @@
 package tutorial.infra.github;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Represents an event that happened in a eclipse repository on GitHub.
@@ -11,14 +10,14 @@ public class Event {
 	private final EventType eventType;
 	private LocalDateTime time;
 	private Repository repo;
-	private Optional<User> user;
+	private User user;
 	private int repoSize;
 	private int watchers;
 	private int forks;
-	private Optional<String> branchName;
-	private Optional<String> message;
+	private String branchName;
+	private String message;
 
-	public Event(EventType eventType, LocalDateTime time, Repository repo, Optional<User> user, int size, int watchers, int forks, Optional<String> refType, Optional<String> message) {
+	public Event(EventType eventType, LocalDateTime time, Repository repo, User user, int size, int watchers, int forks, String branchName, String message) {
 		this.eventType = eventType;
 		this.time = time;
 		this.repo = repo;
@@ -26,7 +25,7 @@ public class Event {
 		this.repoSize = size;
 		this.watchers = watchers;
 		this.forks = forks;
-		this.branchName = refType;
+		this.branchName = branchName;
 		this.message = message;
 	}
 
@@ -46,11 +45,11 @@ public class Event {
 		this.repo = repo;
 	}
 
-	public Optional<User> getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(Optional<User> user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
@@ -78,19 +77,19 @@ public class Event {
 		this.forks = forks;
 	}
 
-	public Optional<String> getBranchName() {
+	public String getBranchName() {
 		return branchName;
 	}
 
-	public void setRefType(Optional<String> refType) {
+	public void setRefType(String refType) {
 		this.branchName = refType;
 	}
 
-	public Optional<String> getMessage() {
+	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(Optional<String> message) {
+	public void setMessage(String message) {
 		this.message = message;
 	}
 
