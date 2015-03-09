@@ -6,15 +6,25 @@ import static tutorial.infra.MissingImplementation.$returnDouble$;
 import static tutorial.infra.MissingImplementation.$returnInt$;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import tutorial.infra.github.Event;
 import tutorial.infra.github.EventType;
+import tutorial.infra.github.Repository;
 
 /**
  * Even more exercises with lambda expressions and streams.
@@ -28,13 +38,22 @@ public class NinjaExercisesAgain {
 	 * 
 	 * We expect 531 events in that week.
 	 */
-	@Ignore
 	@Test
 	public void testMostActiveWeekIn2014() {
 		WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
 		TemporalField weekOfYear = weekFields.weekOfYear();
 		List<? extends Event> events = events();
-		
+		Map<Integer, Long> commitsByWeek = events
+				.stream()
+				.filter(e -> e.getTime().getYear() == 2014
+						&& e.getEventType() == EventType.PushEvent)
+				.collect(
+						Collectors.groupingBy(e -> e.getTime().get(weekOfYear),
+								Collectors.counting()));
+		Map.Entry<Integer, Long> entry = commitsByWeek.entrySet().stream()
+				.max(Comparator.comparing(Map.Entry::getValue)).get();
+		int pushEventsPerWeek = entry.getValue().intValue();
+		assertEquals(531, pushEventsPerWeek);
 	}
 	
 	/**
@@ -44,10 +63,41 @@ public class NinjaExercisesAgain {
 	 * 
 	 * We expect 203 events.
 	 */
-	@Ignore
 	@Test
 	public void testMostActiveWeekIn2013() {
+		WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
+		TemporalField weekOfYear = weekFields.weekOfYear();
 		List<? extends Event> events = events();
+		class RepoAndWeek {
+			Repository repo;
+			Integer week;
+
+			public RepoAndWeek(Repository repo, int week) {
+				this.repo = repo;
+				this.week = week;
+			}
+		}
+		Stream<RepoAndWeek> repoAndWeek = events
+				.stream()
+				.filter(e -> e.getTime().getYear() == 2013 && e.getEventType() == EventType.PushEvent)
+				.map(e -> new RepoAndWeek(e.getRepo(), e.getTime().get(weekOfYear)));
+		Collector<RepoAndWeek, ?, Map<Integer, Long>> counting = Collectors.groupingBy(r -> r.week, Collectors.counting());
+		Map<Repository, Map.Entry<Integer, Long>> projectsToBestWeek = repoAndWeek
+				.collect(Collectors.groupingBy(
+						r -> r.repo,
+						Collectors.collectingAndThen(
+								counting,
+								map -> map
+										.entrySet()
+										.stream()
+										.max(Comparator.comparingLong(Map.Entry::getValue))
+										.get())));
+		int bestWeek = projectsToBestWeek.entrySet().stream()
+				.max(Comparator.comparing(e -> e.getValue().getValue()))
+				.map(e -> e.getValue().getKey()).get();
+		LocalDate day = LocalDate.of(2013, 1, 1).with(weekOfYear, bestWeek)
+				.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+		assertEquals(203, day.getDayOfYear());
 	}
 
 	// The following exercises are suprise bundles.
