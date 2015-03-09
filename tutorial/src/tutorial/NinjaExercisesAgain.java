@@ -100,7 +100,7 @@ public class NinjaExercisesAgain {
 		assertEquals(203, day.getDayOfYear());
 	}
 
-	// The following exercises are suprise bundles.
+	// The following exercises are surprise bundles.
 	
 	/**
 	 * How many commits have been recorded in the most busy 7 consecutive days for any single project.
