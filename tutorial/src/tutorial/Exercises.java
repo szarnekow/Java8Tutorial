@@ -190,7 +190,7 @@ public class Exercises {
 		if (p < 2) {
 			return false;
 		}
-		return IntStream.range(2, (int) Math.sqrt(p) + 1).noneMatch(i->p%i == 0);
+		return IntStream.rangeClosed(2, (int) Math.sqrt(p)).noneMatch(i->p%i == 0);
 	}
 
 	/*
@@ -294,7 +294,7 @@ public class Exercises {
 				this.res = res;
 			}
 		}
-		return IntStream.range(2, (int) Math.sqrt(p) + 1)
+		return IntStream.rangeClosed(2, (int) Math.sqrt(p))
 				.filter(i->p%i == 0)
 				.boxed()
 				.findFirst()
@@ -375,7 +375,7 @@ public class Exercises {
 			return Stream.empty();
 		}
 		return IntStream
-				.range(2, number + 1)
+				.rangeClosed(2, number)
 				.filter(i -> number % i == 0)
 				.limit(1)
 				.boxed()
@@ -415,7 +415,7 @@ public class Exercises {
 		IntSummaryStatistics total = new IntSummaryStatistics();
 		IntSummaryStatistics distinct = new IntSummaryStatistics();
 
-		long fibCount = IntStream.range(1, 10000 + 1)
+		long fibCount = IntStream.rangeClosed(1, 10000)
 				.flatMap(i -> primeFactors(i).mapToInt(Integer::intValue))
 				.peek(total::accept).distinct().peek(distinct::accept)
 				.filter(this::isFib).count();
@@ -445,7 +445,7 @@ public class Exercises {
 	 */
 	@Test
 	public void fizzbuzzAgain() throws IOException {
-		Map<String, List<Integer>> result = IntStream.range(1, 100 + 1).boxed()
+		Map<String, List<Integer>> result = IntStream.rangeClosed(1, 100).boxed()
 				.filter(i -> fizzbuzz(i) != null)
 				.collect(Collectors.groupingBy(this::fizzbuzz));
 
@@ -466,7 +466,7 @@ public class Exercises {
 	 */
 	@Test
 	public void fizzbuzzCounting() throws IOException {
-		Map<String, Long> result = IntStream.range(1, 100 + 1).boxed()
+		Map<String, Long> result = IntStream.rangeClosed(1, 100).boxed()
 				.map(i -> Optional.ofNullable(fizzbuzz(i)).orElse(""))
 				.collect(Collectors.groupingBy(s -> s, Collectors.counting()));
 
